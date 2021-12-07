@@ -62,7 +62,7 @@ fd 就是操作系统分配给被打开文件的标识
 - copyFile：将某个文件中的数据拷贝到另一文件
 - watchFile：对指定文件进行监控
 
-### 使用
+### 常用操作
 
 #### readFile
 
@@ -123,3 +123,53 @@ fs.watchFile('data.txt', { interval: 20 }, (curr, prev) => {
 ```
 
 可通过 fs.unwatchFile() 取消对文件的监听。
+
+### 大文件读写
+
+针对于小型文件，通过上述方法的使用，会将内容读取到内存中，再进行操作。
+
+然而针对大型文件，将内容全部读取到内存中，可能会引起内存溢出等一系列问题。
+
+因此可以使用下列方法对大文件进行操作。
+
+- open
+- close
+- read
+- write
+
+```js
+// 使用 open，close，read，write 对大型文件进行复制
+
+const fs = require('fs')
+/**
+ * 01 打开 a 文件，利用 read 将数据保存到 buffer 暂存起来
+ * 02 打开 b 文件，利用 write 将 buffer 中数据写入到 b 文件中
+ */
+let buf = Buffer.alloc(10)
+const BUFFER_SIZE = buf.length
+let readOffset = 0
+
+fs.open('a.txt', 'r', (err, rfd) => {
+  fs.open('b.txt', 'w', (err, wfd) => {
+    function next () {
+      fs.read(rfd, buf, 0, BUFFER_SIZE, readOffset, (err, readBytes) => {
+        if (!readBytes) {
+          // 如果条件成立，说明内容已经读取完毕
+          fs.close(rfd, ()=> {})
+          fs.close(wfd, ()=> {})
+          console.log('拷贝完成')
+          return
+        }
+        readOffset += readBytes
+        fs.write(wfd, buf, 0, readBytes, (err, written) => {
+          next()
+        })
+      })
+    }
+    next()
+  })
+})
+```
+
+
+
