@@ -1,0 +1,13 @@
+{
+  "name": "md-to-html",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "browser-sync": "^2.27.7",
+    "marked": "^4.0.6"
+  },
+  "scripts": {
+    "test:readme": "node index.js ../README.md"
+  }
+}

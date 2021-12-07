@@ -68,7 +68,7 @@ fd 就是操作系统分配给被打开文件的标识
 
 ```js
 fs.readFile(path.resolve('data.txt'), 'utf-8', (err, data) => {
-  console.log(err) 
+  console.log(err)
   if (!err) {
     console.log(data)
   }
@@ -94,7 +94,7 @@ fs.writeFile('data.txt', '123', {}, (err) => {
 #### appendFile
 
 ```js
-fs.appendFile('data.txt', 'hello node.js',{},  (err) => {
+fs.appendFile('data.txt', 'hello node.js', {}, (err) => {
   console.log('写入成功')
 })
 ```
@@ -114,7 +114,7 @@ fs.copyFile('data.txt', 'test.txt', () => {
 #### watchFile
 
 ```js
-fs.watchFile('data.txt', {interval: 20}, (curr, prev) => {
+fs.watchFile('data.txt', { interval: 20 }, (curr, prev) => {
   if (curr.mtime !== prev.mtime) {
     console.log('文件被修改了')
     fs.unwatchFile('data.txt')
